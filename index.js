@@ -6,13 +6,18 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 
 const app = express();
-app.use(cors()); // Em produção você pode limitar: cors({ origin: 'https://seusite.com' })
+
+// Configura CORS para aceitar apenas seu site
+app.use(cors({
+  origin: 'https://aprovamaispb-three.vercel.app' // Substitua pelo seu domínio
+}));
+
 app.use(bodyParser.json());
 
 // Variáveis de ambiente definidas no Render
 const PAGSEGURO_EMAIL = process.env.PAGSEGURO_EMAIL;
 const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN;
-const REDIRECT_URL = process.env.REDIRECT_URL || 'https://seusite.com/checkout-success.html';
+const REDIRECT_URL = process.env.REDIRECT_URL || 'https://aprovamaispb-three.vercel.app/checkout-success.html';
 const IS_SANDBOX = process.env.PAGSEGURO_SANDBOX === '1';
 
 const CHECKOUT_URL = IS_SANDBOX
@@ -78,6 +83,7 @@ app.post('/pagseguro-notification', async (req, res) => {
   }
 });
 
+// Healthcheck
 app.get('/health', (_, res) => res.send('ok'));
 
 const PORT = process.env.PORT || 3000;
